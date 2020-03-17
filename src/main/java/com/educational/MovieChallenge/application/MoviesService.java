@@ -36,4 +36,8 @@ public class MoviesService {
                 .map(MovieMapper::mapToMovieDTO)
                 .collect(Collectors.toList());
     }
+
+    public Movie findMovie(Integer id) {
+        return moviesRepository.getOne(id);
+    }
 }
