@@ -1,5 +1,6 @@
 package com.educational.MovieChallenge.application;
 
+import com.educational.MovieChallenge.DTO.MovieDTO;
 import com.educational.MovieChallenge.domain.Actor;
 import com.educational.MovieChallenge.domain.Movie;
 import com.educational.MovieChallenge.repository.MoviesRepository;
@@ -26,7 +27,6 @@ public class MoviesServiceTest {
     private MoviesService moviesService;
 
     private final Actor testActor = Actor.builder().id(1).name("Keanu Reves").build();
-    private final List<Actor> actorList = Arrays.asList(testActor);
     private final Movie testMovie = Movie.builder().id(1)
             .title("Matrix")
             .gender("Acción")
@@ -41,5 +41,23 @@ public class MoviesServiceTest {
         when(moviesRepository.save(any())).thenReturn(testMovie);
         Movie result = moviesService.save(testMovie);
         assertThat(result.getId()).isEqualTo(1);
+    }
+
+    @Test
+    public void whenControllerSendAllMoviesActionThenReturnExpectedResult(){
+        testMovie.addActor(testActor);
+        when(moviesRepository.findAll()).thenReturn(Arrays.asList(testMovie));
+        List<MovieDTO> result = moviesService.getMovies();
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void whenControllerSendAMovieActionThenReturnExpectedResult(){
+        testMovie.addActor(testActor);
+        when(moviesRepository.getOne(any())).thenReturn(testMovie);
+        Movie result = moviesService.findMovie(1);
+        assertThat(result).isNotNull();
+        assertThat(result.getTitle()).isEqualTo("Matrix");
     }
 }
